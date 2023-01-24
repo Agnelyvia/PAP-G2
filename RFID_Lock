@@ -1,0 +1,70 @@
+#include <LiquidCrystal.h>
+#include <MFRC522.h>
+#include <SPI.h>
+#include <Servo.h>
+
+#define RST_PIN 8 //reset pin for RFID reader
+#define SS_PIN  9
+#define SERVO_PIN 10 //pin to connect the servo to
+#define BUZZER 11 //pin to connect the buzzer to
+#define LEDFree 12 //pin to connect the free LED to
+#define LEDOccupied 13 //pin to connect the occupied LED to
+#define lockButton 1 //pin to connect the button to
+
+LiquidCrystal lcd(8, 7, 6, 5, 4, 3, 2); //pins to connect the LCD to
+
+MFRC522 mfrc522(SS_PIN, RST_PIN); //pins defined to work with the RFID reader
+Servo servoLock; //create a servo instance
+
+byte allowed_uid[] = { 0x31, 0x21, 0x2C, 0x47,}; //specified card ID that is allowed
+byte uid[4]; //how big, in bytes, the card ID is
+
+void setup() {
+  pinMode(lockButton, INPUT); //define the button as an input
+  Serial.begin(9600);
+  servoLock.attach(SERVO_PIN); //attatch the servo instance with the servo pin defined
+  SPI.begin();
+  mfrc522.PCD_Init(); //create an RFID reader instance
+  servoLock.write(0); //put servo in the unlocked position
+  lcd.begin(16, 2); //how many collums and how many rows the LCD has
+  pinMode(BUZZER, OUTPUT); //define the buzzer as an output
+  pinMode(LEDFree, OUTPUT); //define the free LED as an output
+  pinMode(LEDOccupied, OUTPUT); //define the occupied LED as an output
+}
+
+void loop() {
+  if(lockButton == HIGH){ //if the door is closed, turn Servo to the locked position
+    servoLock.write(90);
+  }
+
+  lcd.print("waiting for card");
+
+  if ( ! mfrc522.PICC_IsNewCardPresent()) {  //Is a card present to be read?
+    return;
+  }
+
+  if ( ! mfrc522.PICC_ReadCardSerial()) { //Read the card present 
+    return;
+  }
+
+  for (byte i = 0; i < mfrc522.uid.size; i++) { 
+    uid[i] = mfrc522.uid.uidByte[i];
+  }
+
+  if (memcmp(uid, allowed_uid, sizeof(uid)) == 0) { //see if card read is the sepcified that's accepted
+    lcd.print("card allowed"); //write on the LCD that the card is the correct one
+    servoLock.write(0); // set the servo to the unlocked position
+    delay(15000); // wait for 15 second
+    servoLock.write(90); // set the servo back to the locked position
+    digitalWrite(LEDOccupied = HIGH) //turn on the LED that indicates that the locker is occupied
+    digitalWrite(LEDFree = LOW) //turn off the LED that indicates that the locker is free
+  } else { //if the card is not the specified that's accepted
+    lcd.print("card not allowed"); //write on the LCD that the card is not the correct one
+    digitalWrite(BUZZER, HIGH); //turn on buzzer to make a sound
+    delay(2000); //delay the sound for 2 seconds
+    digitalWrite(BUZZER, LOW); //turn off buzzer
+    return;
+  }
+  mfrc522.PICC_HaltA();
+  mfrc522.PCD_StopCrypto1();
+}
