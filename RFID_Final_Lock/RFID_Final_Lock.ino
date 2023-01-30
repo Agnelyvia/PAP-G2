@@ -137,7 +137,7 @@ bool verifyNameOfCard(MFRC522::MIFARE_Key key, byte block, byte len, MFRC522::St
 
   Serial.println(F("**End Reading**"));
 
-  if (Nome == "Silva") {
+  if ((Nome == "Silva") || (Nome == "Master")) {
     return true;
   } else {
     return false;
@@ -163,6 +163,7 @@ void closeDoor() {
   digitalWrite(freeLED, LOW);
   lcd.print("Door closing");
   tone(Buzzer, 1000, 1000);
+  delay(1000);
   lockServo.write(90);
   lockState = true;
   lcd.clear();
@@ -171,7 +172,7 @@ void closeDoor() {
 
 void doorNotClosed() {
   lcd.clear();
-  lcd.print("Please close the door");
+  lcd.print("Close the door");
   tone(Buzzer, 500, 1000);
   delay(1000);
   tone(Buzzer, 500, 1000);
