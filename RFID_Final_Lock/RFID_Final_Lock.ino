@@ -125,7 +125,7 @@ bool verifyNameOfCard(MFRC522::MIFARE_Key key, byte block, byte len, MFRC522::St
   Serial.println(F("**End Reading**"));
 
   if ((Nome == "Silva") || (Nome == "Master")) {  //if the name of the card is the same as the name defiened
-    return true;                                  //return that it's correct
+    return true;   //return that it's correct
   } else {
     return false;  //return that it's inncorrect
   }
