@@ -4,13 +4,13 @@
 #include <SPI.h>
 #include <LiquidCrystal.h>
 
-#define RST_PIN 9          // define the RST pin to pin 10
-#define SS_PIN 10          // define the SS pin to pin 10
-#define servoPin A2        //define the Servo to pin A2
-#define freeLED A5         //define the Green LED to pin A5
-#define occupiedLED A4     //define the Red LED to pin A4
-#define chargingLED A1     //define the Yellow LED to pin A1
-#define Buzzer A3          //define the Buzzer to pin A3
+#define RST_PIN 9       //define the RST pin to pin 10
+#define SS_PIN 10       //define the SS pin to pin 10
+#define servoPin A2     //define the Servo to pin A2
+#define freeLED A5      //define the Green LED to pin A5
+#define occupiedLED A4  //define the Red LED to pin A4
+#define chargingLED A1  //define the Yellow LED to pin A1
+#define Buzzer A3       //define the Buzzer to pin A3
 
 const int doorButton = 2;  //define the button pin to pin 2
 
@@ -159,7 +159,7 @@ void closeDoor() {
   lockServo.write(90);              //turn the servo to the 90º position, locked
   lockState = true;                 //change the lockState to false, meaning the locker is now locked
   lcd.clear();                      //clear the LCD of the previous message
-  lcd.print("In use");       //write on the LCD "pass the card"
+  lcd.print("In use");              //write on the LCD "pass the card"
 }
 
 void doorNotClosed() {
