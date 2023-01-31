@@ -7,9 +7,11 @@
 #define RST_PIN 9          // define the RST pin to pin 10
 #define SS_PIN 10          // define the SS pin to pin 10
 #define servoPin A2        //define the Servo to pin A2
-#define freeLED A5         //define the Servo to pin A5
-#define occupiedLED A4     //define the Servo to pin A4
-#define Buzzer A3          //define the Servo to pin A3
+#define freeLED A5         //define the Green LED to pin A5
+#define occupiedLED A4     //define the Red LED to pin A4
+#define chargingLED A1     //define the Yellow LED to pin A1
+#define Buzzer A3          //define the Buzzer to pin A3
+
 const int doorButton = 2;  //define the button pin to pin 2
 
 const int rs = 8, en = 7, d4 = 6, d5 = 5, d6 = 4, d7 = 3;  //define the LCD pins
@@ -33,6 +35,7 @@ void setup() {
   pinMode(servoPin, OUTPUT);     //define the Servo as an  output
   pinMode(freeLED, OUTPUT);      //define the green LED as an output
   pinMode(occupiedLED, OUTPUT);  //define the red LED as an output
+  pinMode(chargingLED, OUTPUT);  //define the yellow LED as an output
   pinMode(Buzzer, OUTPUT);       //define the Buzzer as an output
   pinMode(doorButton, INPUT);    //define the button as an input
 
@@ -135,6 +138,7 @@ void openDoor() {
   lcd.clear();                     //clear the LCD of the previous message
   digitalWrite(occupiedLED, LOW);  //turn off the occupied LED
   digitalWrite(freeLED, HIGH);     //turn on the free LED
+  digitalWrite(chargingLED, LOW);  //turn off the charging LED
   lcd.print("Door opening");       //print on the LCD "door opening"
   tone(Buzzer, 1000, 1000);        //buzzer makes a sound
   delay(1000);                     //delay the code for 1000 milliseconds (1 second)
@@ -148,13 +152,14 @@ void closeDoor() {
   lcd.clear();                      //clear the LCD of the previous message
   digitalWrite(occupiedLED, HIGH);  //turn on the occupied LED
   digitalWrite(freeLED, LOW);       //turn off the free LED
+  digitalWrite(chargingLED, HIGH);  //turn on the charging LED
   lcd.print("Door closing");        //write on the LCD "door closing"
   tone(Buzzer, 1000, 1000);         //make the buzzer make a soound
   delay(1000);                      //delay the code for 1000 milliseconds (1 second)
   lockServo.write(90);              //turn the servo to the 90º position, locked
   lockState = true;                 //change the lockState to false, meaning the locker is now locked
   lcd.clear();                      //clear the LCD of the previous message
-  lcd.print("pass the card");       //write on the LCD "pass the card"
+  lcd.print("In use");       //write on the LCD "pass the card"
 }
 
 void doorNotClosed() {
